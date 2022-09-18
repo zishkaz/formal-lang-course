@@ -27,7 +27,6 @@ def test_creating_min_dfa_from_regex():
     expected.add_transition(state_2, symbol_d, state_3)
     assert (
         expected.is_equivalent_to(actual_dfa)
-        and len(actual_dfa.states) == len(expected.states)
         and actual_dfa.is_deterministic()
         and expected.minimize().is_equivalent_to(expected)
     )

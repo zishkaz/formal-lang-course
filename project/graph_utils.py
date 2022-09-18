@@ -102,6 +102,13 @@ def save_graph(graph: MultiDiGraph, file: Union[str, IO]):
 def build_nfa_by_graph(
     graph: MultiDiGraph, start_nodes: Set = None, final_nodes: Set = None
 ) -> NondeterministicFiniteAutomaton:
+    """Builds NFA based on the given graph.
+
+    :param graph: Graph to build corresponding NFA with.
+    :param start_nodes: (optional) set of nodes to be used as start states in the built NFA.
+    :param final_nodes: (optional) set of nodes to be used as final states in the built NFA.
+    :return: NFA corresponding to the given graph.
+    """
     nfa = NondeterministicFiniteAutomaton()
     all_nodes = set(graph.nodes)
     for node_from, node_to, label in graph.edges(data="label"):
