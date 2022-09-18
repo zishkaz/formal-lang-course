@@ -1,6 +1,6 @@
 from typing import NamedTuple, Set, Tuple, Union
 
-import cfpq_data
+from cfpq_data import *
 import networkx.drawing.nx_pydot
 from networkx import MultiDiGraph
 from typing.io import IO
