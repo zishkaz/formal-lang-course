@@ -4,6 +4,7 @@ import cfpq_data
 import networkx.drawing.nx_pydot
 from networkx import MultiDiGraph
 from typing.io import IO
+from pyformlang.finite_automaton import NondeterministicFiniteAutomaton
 
 
 class GraphInfo(NamedTuple):
@@ -96,3 +97,24 @@ def save_graph(graph: MultiDiGraph, file: Union[str, IO]):
     :param file: File handle to save with.
     """
     networkx.drawing.nx_pydot.write_dot(graph, file)
+
+
+def build_nfa_by_graph(
+        graph: MultiDiGraph, start_nodes: Set = None, final_nodes: Set = None
+) -> NondeterministicFiniteAutomaton:
+    nfa = NondeterministicFiniteAutomaton()
+    all_nodes = set(graph.nodes)
+    for node_from, node_to, label in graph.edges(data="label"):
+        nfa.add_transition(node_from, label, node_to)
+
+    if start_nodes is None:
+        start_nodes = all_nodes
+    for node in start_nodes:
+        nfa.add_start_state(node)
+
+    if final_nodes is None:
+        final_nodes = all_nodes
+    for node in final_nodes:
+        nfa.add_final_state(node)
+
+    return nfa
