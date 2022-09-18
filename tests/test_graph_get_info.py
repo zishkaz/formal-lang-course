@@ -18,6 +18,3 @@ def test_wc_from_dataset():
         number_of_nodes=332,
         edge_labels={"A", "D"},
     )
-
-
-test_wc_from_dataset()

@@ -46,6 +46,6 @@ def test_min_dfa_accepts_same_language():
         [Symbol("")],
         [Symbol("a"), Symbol("b"), Symbol("c")],
     ]
-    assert all(dfa.accepts(word) for word in accepted) and not all(
-        dfa.accepts(word) for word in not_accepted
+    assert all(dfa.accepts(word) for word in accepted) and all(
+        not dfa.accepts(word) for word in not_accepted
     )
