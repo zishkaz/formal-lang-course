@@ -50,7 +50,7 @@ def build_two_cycle_labeled_graph(
     :param edge_labels: Edge labels.
     :return: Graph with two cycles connected by one node.
     """
-    return cfpq_data.labeled_two_cycles_graph(
+    return labeled_two_cycles_graph(
         n=first_cycle_size,
         m=second_cycle_size,
         labels=edge_labels,
@@ -85,8 +85,8 @@ def load_graph(graph_name: str) -> MultiDiGraph:
     :param graph_name: Name of the graph.
     :return: Loaded graph.
     """
-    graph_path = cfpq_data.download(graph_name)
-    return cfpq_data.graph_from_csv(graph_path)
+    graph_path = download(graph_name)
+    return graph_from_csv(graph_path)
 
 
 def save_graph(graph: MultiDiGraph, file: Union[str, IO]):
