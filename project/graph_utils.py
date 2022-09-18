@@ -100,7 +100,7 @@ def save_graph(graph: MultiDiGraph, file: Union[str, IO]):
 
 
 def build_nfa_by_graph(
-        graph: MultiDiGraph, start_nodes: Set = None, final_nodes: Set = None
+    graph: MultiDiGraph, start_nodes: Set = None, final_nodes: Set = None
 ) -> NondeterministicFiniteAutomaton:
     nfa = NondeterministicFiniteAutomaton()
     all_nodes = set(graph.nodes)
