@@ -1,4 +1,8 @@
-from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State, DeterministicFiniteAutomaton
+from pyformlang.finite_automaton import (
+    NondeterministicFiniteAutomaton,
+    State,
+    DeterministicFiniteAutomaton,
+)
 
 from project import AdjacencyMatrix, intersect_adjacency_matrices, am_to_nfa
 

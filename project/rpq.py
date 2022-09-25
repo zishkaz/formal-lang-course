@@ -5,10 +5,10 @@ from project.matrix import AdjacencyMatrix, intersect_adjacency_matrices
 
 
 def rpq(
-        graph: nx.MultiDiGraph,
-        query: str,
-        start_nodes: set = None,
-        final_nodes: set = None,
+    graph: nx.MultiDiGraph,
+    query: str,
+    start_nodes: set = None,
+    final_nodes: set = None,
 ):
     """Calculates Regular Path Querying from given graph and regular expression.
     :param graph: Graph to send query to.
@@ -34,7 +34,10 @@ def rpq(
     for state_from, state_to in zip(*transitive_closure.nonzero()):
         if state_from in start_states and state_to in final_states:
             result.add(
-                (state_from // query_matrix.get_states_count(), state_to // query_matrix.get_states_count())
+                (
+                    state_from // query_matrix.get_states_count(),
+                    state_to // query_matrix.get_states_count(),
+                )
             )
 
     return result

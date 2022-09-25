@@ -3,7 +3,6 @@ from scipy import sparse
 
 
 class AdjacencyMatrix:
-
     def __init__(self, nfa: NondeterministicFiniteAutomaton = None):
         if nfa is None:
             self.start_states = set()
@@ -17,7 +16,7 @@ class AdjacencyMatrix:
                 state: index for index, state in enumerate(nfa.states)
             }
             self.matrix = self.__init_matrix__(nfa)
-    
+
     def get_states_count(self):
         """
         :return: Count of states in the NFA.
@@ -54,7 +53,8 @@ class AdjacencyMatrix:
                     index_to = self.state_indices[state_to]
                     if label not in result_matrix:
                         result_matrix[label] = sparse.csr_matrix(
-                            (self.get_states_count(), self.get_states_count()), dtype=bool
+                            (self.get_states_count(), self.get_states_count()),
+                            dtype=bool,
                         )
                     result_matrix[label][index_from, index_to] = True
 
@@ -76,7 +76,9 @@ class AdjacencyMatrix:
         return result
 
 
-def intersect_adjacency_matrices(first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix):
+def intersect_adjacency_matrices(
+    first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix
+):
     """
     Calculates tensor multiplication of two adjacency matrices.
     :return: Result matrix.
@@ -92,15 +94,22 @@ def intersect_adjacency_matrices(first_matrix: AdjacencyMatrix, second_matrix: A
     for state_first, state_first_index in first_matrix.state_indices.items():
         for state_second, state_second_index in second_matrix.state_indices.items():
             new_state_index = (
-                    state_first_index * second_matrix.get_states_count() + state_second_index
+                state_first_index * second_matrix.get_states_count()
+                + state_second_index
             )
             new_state = new_state_index
             result.state_indices[new_state] = new_state_index
 
-            if state_first in first_matrix.start_states and state_second in second_matrix.start_states:
+            if (
+                state_first in first_matrix.start_states
+                and state_second in second_matrix.start_states
+            ):
                 result.start_states.add(new_state)
 
-            if state_first in first_matrix.final_states and state_second in second_matrix.final_states:
+            if (
+                state_first in first_matrix.final_states
+                and state_second in second_matrix.final_states
+            ):
                 result.final_states.add(new_state)
 
     return result
