@@ -1,7 +1,7 @@
 import networkx as nx
 
 from project import build_nfa_by_graph, regex_to_min_dfa
-from project.matrix import AdjacencyMatrix, intersect_adjacency_matrices
+from project.adjacency_matrix import AdjacencyMatrix, intersect_adjacency_matrices
 
 
 def rpq(
