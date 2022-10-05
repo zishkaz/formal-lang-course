@@ -9,11 +9,7 @@ def make_graph():
 
 def test_rpq_bfs_empty_graph():
     graph = nx.MultiDiGraph()
-    actual_rpq = rpq_bfs(
-        graph=graph,
-        query="A",
-        all_reachable=True
-    )
+    actual_rpq = rpq_bfs(graph=graph, query="A", all_reachable=True)
     assert not actual_rpq
 
 
@@ -25,7 +21,7 @@ def test_rpq_bfs_single_start_single_final():
         query="AAAAAA|B",
         start_nodes={0},
         final_nodes={1, 2, 3, 4, 5, 6},
-        all_reachable=True
+        all_reachable=True,
     )
     assert actual_rpq == expected_rpq
 

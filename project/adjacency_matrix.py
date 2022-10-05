@@ -87,7 +87,7 @@ class AdjacencyMatrix:
 
 
 def intersect_adjacency_matrices(
-        first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix
+    first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix
 ):
     """
     Calculates tensor multiplication of two adjacency matrices.
@@ -104,21 +104,21 @@ def intersect_adjacency_matrices(
     for state_first, state_first_index in first_matrix.state_indices.items():
         for state_second, state_second_index in second_matrix.state_indices.items():
             new_state_index = (
-                    state_first_index * second_matrix.get_states_count()
-                    + state_second_index
+                state_first_index * second_matrix.get_states_count()
+                + state_second_index
             )
             new_state = new_state_index
             result.state_indices[new_state] = new_state_index
 
             if (
-                    state_first in first_matrix.start_states
-                    and state_second in second_matrix.start_states
+                state_first in first_matrix.start_states
+                and state_second in second_matrix.start_states
             ):
                 result.start_states.add(new_state)
 
             if (
-                    state_first in first_matrix.final_states
-                    and state_second in second_matrix.final_states
+                state_first in first_matrix.final_states
+                and state_second in second_matrix.final_states
             ):
                 result.final_states.add(new_state)
 
@@ -145,9 +145,7 @@ def am_to_nfa(am: AdjacencyMatrix):
 
 
 def make_front(
-        start_state_indices,
-        first_matrix: AdjacencyMatrix,
-        second_matrix: AdjacencyMatrix
+    start_state_indices, first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix
 ) -> sparse.csr_matrix:
     front_row = sparse.dok_matrix((1, first_matrix.get_states_count()), dtype=bool)
     for i in start_state_indices:
@@ -156,34 +154,40 @@ def make_front(
     front = sparse.csr_matrix(
         (second_matrix.get_states_count(), first_matrix.get_states_count()), dtype=bool
     )
-    for i in map(lambda state: second_matrix.index_by_state(state), second_matrix.start_states):
+    for i in map(
+        lambda state: second_matrix.index_by_state(state), second_matrix.start_states
+    ):
         front[i, :] = front_row
     return front
 
 
 def get_reachable(
-        sub_front_idx,
-        first_matrix: AdjacencyMatrix,
-        second_matrix: AdjacencyMatrix,
-        visited
+    sub_front_idx,
+    first_matrix: AdjacencyMatrix,
+    second_matrix: AdjacencyMatrix,
+    visited,
 ) -> Set[State]:
     sub_front_offset = sub_front_idx * second_matrix.get_states_count()
     reachable = sparse.csr_matrix((1, first_matrix.get_states_count()), dtype=bool)
-    for i in map(lambda state: second_matrix.index_by_state(state), second_matrix.final_states):
+    for i in map(
+        lambda state: second_matrix.index_by_state(state), second_matrix.final_states
+    ):
         reachable += visited[sub_front_offset + i, :]
     return set(
         first_matrix.state_by_index(i)
         for i in reachable.nonzero()[1]
-        if i in map(lambda state: first_matrix.index_by_state(state), first_matrix.final_states)
+        if i
+        in map(
+            lambda state: first_matrix.index_by_state(state), first_matrix.final_states
+        )
     )
 
 
 def sync_bfs(
-        first_matrix: AdjacencyMatrix, second_matrix: AdjacencyMatrix, all_reachable: bool = False
-) -> Union[
-    Set[State],
-    Dict[State, Set[State]],
-]:
+    first_matrix: AdjacencyMatrix,
+    second_matrix: AdjacencyMatrix,
+    all_reachable: bool = False,
+) -> Union[Set[State], Dict[State, Set[State]],]:
     """Performs synchronized BFS on two NFA's.
     :param all_reachable: Specifies whether for each start node will be returned a set of reachable nodes as Dict,
                           or all reachable nodes as Set from the given start nodes set (True for Set, False for Dict)
@@ -194,20 +198,31 @@ def sync_bfs(
 
     common_symbols = first_matrix.matrix.keys().__and__(second_matrix.matrix.keys())
     front = (
-        sparse.vstack([make_front({i}, first_matrix, second_matrix) for i in
-                       map(lambda state: first_matrix.index_by_state(state), first_matrix.start_states)])
+        sparse.vstack(
+            [
+                make_front({i}, first_matrix, second_matrix)
+                for i in map(
+                    lambda state: first_matrix.index_by_state(state),
+                    first_matrix.start_states,
+                )
+            ]
+        )
         if all_reachable
-        else make_front(map(lambda state: first_matrix.index_by_state(state), first_matrix.start_states),
-                        first_matrix, second_matrix)
+        else make_front(
+            map(
+                lambda state: first_matrix.index_by_state(state),
+                first_matrix.start_states,
+            ),
+            first_matrix,
+            second_matrix,
+        )
     )
     visited = front
     while True:
         next_front = sparse.csr_matrix(front.shape, dtype=bool)
         for label in common_symbols:
             next_front_part = front.__matmul__(first_matrix.matrix[label])
-            for index in range(
-                    len(first_matrix.start_states) if all_reachable else 1
-            ):
+            for index in range(len(first_matrix.start_states) if all_reachable else 1):
                 offset = index * second_matrix.get_states_count()
                 for (i, j) in zip(*second_matrix.matrix[label].nonzero()):
                     next_front[offset + j, :] += next_front_part[offset + i, :]
@@ -219,14 +234,14 @@ def sync_bfs(
     return (
         {
             first_matrix.state_by_index(start_state_idx): get_reachable(
-                sub_front_idx,
-                first_matrix,
-                second_matrix,
-                visited
+                sub_front_idx, first_matrix, second_matrix, visited
             )
             for sub_front_idx, start_state_idx in enumerate(
-                map(lambda state: first_matrix.index_by_state(state), first_matrix.start_states)
-             )
+                map(
+                    lambda state: first_matrix.index_by_state(state),
+                    first_matrix.start_states,
+                )
+            )
         }
         if all_reachable
         else get_reachable(0, first_matrix, second_matrix, visited)

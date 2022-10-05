@@ -3,7 +3,11 @@ from typing import Iterable, Union, Set, Dict
 import networkx as nx
 
 from project import build_nfa_by_graph, regex_to_min_dfa
-from project.adjacency_matrix import AdjacencyMatrix, intersect_adjacency_matrices, sync_bfs
+from project.adjacency_matrix import (
+    AdjacencyMatrix,
+    intersect_adjacency_matrices,
+    sync_bfs,
+)
 
 
 def rpq_tensor(
@@ -46,11 +50,11 @@ def rpq_tensor(
 
 
 def rpq_bfs(
-        query: str,
-        graph: nx.MultiDiGraph,
-        start_nodes: Iterable[int] = None,
-        final_nodes: Iterable[int] = None,
-        all_reachable: bool = False,
+    query: str,
+    graph: nx.MultiDiGraph,
+    start_nodes: Iterable[int] = None,
+    final_nodes: Iterable[int] = None,
+    all_reachable: bool = False,
 ) -> Union[Set[int], Dict[int, Set[int]]]:
     """Calculates Regular Path Querying using multiple source BFS from given graph and regular expression.
     :param graph: Graph to send query to.
