@@ -53,10 +53,7 @@ def test_rpq_bfs_1():
     graph = make_graph()
     expected_rpq = {3}
     actual_rpq = rpq_bfs(
-        graph=graph,
-        query="(A|B)C(D*)(E*)",
-        start_nodes={0},
-        final_nodes={3}
+        graph=graph, query="(A|B)C(D*)(E*)", start_nodes={0}, final_nodes={3}
     )
     assert actual_rpq == expected_rpq
 
@@ -69,8 +66,6 @@ def test_rpq_bfs_2():
         query="(A*)(C*)(E*)",
         start_nodes={0},
         final_nodes={4, 5},
-        all_reachable=True
+        all_reachable=True,
     )
     assert actual_rpq == expected_rpq
-
-
