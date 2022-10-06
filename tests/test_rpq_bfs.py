@@ -6,6 +6,7 @@ from project import build_two_cycle_labeled_graph, rpq_bfs
 def make_graph_two_cycled():
     return build_two_cycle_labeled_graph(5, 3, ("A", "B"))
 
+
 def make_graph():
     graph = nx.MultiDiGraph()
     graph.add_edge(0, 1, label="A")
@@ -47,6 +48,7 @@ def test_rpq_bfs_all_start_and_final():
     )
     assert actual_rpq == expected_rpq
 
+
 def test_rpq_bfs_1():
     graph = make_graph()
     expected_rpq = {3}
@@ -61,16 +63,14 @@ def test_rpq_bfs_1():
 
 def test_rpq_bfs_2():
     graph = make_graph()
-    expected_rpq = {0}
+    expected_rpq = {0: {4, 5}}
     actual_rpq = rpq_bfs(
         graph=graph,
-        query="(A|C)DEE",
+        query="(A*)(C*)(E*)",
         start_nodes={0},
-        final_nodes={5},
+        final_nodes={4, 5},
         all_reachable=True
     )
     assert actual_rpq == expected_rpq
-
-test_rpq_bfs_2()
 
 
