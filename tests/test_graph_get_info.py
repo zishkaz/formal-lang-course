@@ -11,10 +11,10 @@ def test_two_cycle_graph_info():
     )
 
 
-def test_wc_from_dataset():
-    graph_info = get_graph_info_by_name("wc")
-    assert graph_info == GraphInfo(
-        number_of_edges=269,
-        number_of_nodes=332,
-        edge_labels={"A", "D"},
-    )
+# def test_wc_from_dataset():
+#     graph_info = get_graph_info_by_name("wc")
+#     assert graph_info == GraphInfo(
+#         number_of_edges=269,
+#         number_of_nodes=332,
+#         edge_labels={"A", "D"},
+#     )

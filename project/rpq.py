@@ -1,16 +1,22 @@
+from typing import Iterable, Union, Set, Dict
+
 import networkx as nx
 
 from project import build_nfa_by_graph, regex_to_min_dfa
-from project.adjacency_matrix import AdjacencyMatrix, intersect_adjacency_matrices
+from project.adjacency_matrix import (
+    AdjacencyMatrix,
+    intersect_adjacency_matrices,
+    sync_bfs,
+)
 
 
-def rpq(
+def rpq_tensor(
     graph: nx.MultiDiGraph,
     query: str,
     start_nodes: set = None,
     final_nodes: set = None,
 ):
-    """Calculates Regular Path Querying from given graph and regular expression.
+    """Calculates Regular Path Querying using tensor multiplication from given graph and regular expression.
     :param graph: Graph to send query to.
     :param query: A graph query.
     :param start_nodes: Set of start nodes of the graph.
@@ -41,3 +47,29 @@ def rpq(
             )
 
     return result
+
+
+def rpq_bfs(
+    query: str,
+    graph: nx.MultiDiGraph,
+    start_nodes: Iterable[int] = None,
+    final_nodes: Iterable[int] = None,
+    all_reachable: bool = False,
+) -> Union[Set[int], Dict[int, Set[int]]]:
+    """Calculates Regular Path Querying using multiple source BFS from given graph and regular expression.
+    :param graph: Graph to send query to.
+    :param query: A graph query.
+    :param start_nodes: Set of start nodes of the graph.
+    :param final_nodes: Set of final nodes of the graph.
+    :param all_reachable: [Used in sync_bfs function] Specifies whether for each start node will be returned a set of reachable
+                          nodes as Dict, or all reachable nodes as Set from the given start nodes set (True for Set, False for Dict).
+    :return: Regular Path Querying in format depending on all_reachable flag.
+    """
+    am1 = AdjacencyMatrix(build_nfa_by_graph(graph, start_nodes, final_nodes))
+    am2 = AdjacencyMatrix(regex_to_min_dfa(query))
+    result = sync_bfs(am1, am2, all_reachable)
+    return (
+        {start.value: {end.value for end in ends} for (start, ends) in result.items()}
+        if all_reachable
+        else {end.value for end in result}
+    )
