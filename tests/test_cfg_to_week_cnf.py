@@ -22,7 +22,10 @@ def test_cfg_to_weak_cnf_1():
         Production(Variable("C#CNF#4"), [Variable("S"), Variable(")#CNF#")]),
     }
     assert weak_cnf.productions == expected
-    assert all(CFG.from_text(cfg_text).contains(word) == weak_cnf.contains(word) for word in words_to_check)
+    assert all(
+        CFG.from_text(cfg_text).contains(word) == weak_cnf.contains(word)
+        for word in words_to_check
+    )
 
 
 def test_cfg_to_weak_cnf_2():
@@ -38,4 +41,7 @@ def test_cfg_to_weak_cnf_2():
         Production(Variable("S"), [Variable("a#CNF#"), Variable("S")]),
     }
     assert weak_cnf.productions == expected
-    assert all(CFG.from_text(cfg_text).contains(word) == weak_cnf.contains(word) for word in words_to_check)
+    assert all(
+        CFG.from_text(cfg_text).contains(word) == weak_cnf.contains(word)
+        for word in words_to_check
+    )

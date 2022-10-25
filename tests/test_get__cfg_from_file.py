@@ -7,7 +7,7 @@ test_dir_path = os.path.dirname(os.path.abspath(__file__))
 
 def create_temp_file(file_name, text):
     cfg_file = os.sep.join([test_dir_path, file_name])
-    with open(cfg_file, 'wt') as f:
+    with open(cfg_file, "wt") as f:
         f.write(text)
 
     return cfg_file

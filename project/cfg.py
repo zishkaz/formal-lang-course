@@ -15,12 +15,12 @@ def cfg_to_weak_cnf(cfg: CFG) -> CFG:
     cleared_cfg_productions = cleared_cfg._decompose_productions(
         cleared_cfg._get_productions_with_only_single_terminals()
     )
-    return CFG(start_symbol=cleared_cfg.start_symbol, productions=set(cleared_cfg_productions))
+    return CFG(
+        start_symbol=cleared_cfg.start_symbol, productions=set(cleared_cfg_productions)
+    )
 
 
-def get_cfg_from_file(
-        file: str, start_symbol: Variable = Variable("S")
-) -> CFG:
+def get_cfg_from_file(file: str, start_symbol: Variable = Variable("S")) -> CFG:
     """Loads Context Free Grammar from file.
 
     :param file: Containing file path.
