@@ -9,3 +9,6 @@ from project.adjacency_matrix import *
 
 import project.rpq
 from project.rpq import *
+
+import project.cfg
+from project.cfg import *
