@@ -1,4 +1,10 @@
+from collections import defaultdict
+from functools import reduce
+
 from pyformlang.cfg import CFG, Variable
+from pyformlang.regular_expression import Regex
+
+from project.ecfg import ECFG
 
 
 def cfg_to_weak_cnf(cfg: CFG) -> CFG:
@@ -29,3 +35,36 @@ def get_cfg_from_file(file: str, start_symbol: Variable = Variable("S")) -> CFG:
     """
     with open(file) as f:
         return CFG.from_text(f.read(), start_symbol=start_symbol)
+
+
+def convert_cfg_to_ecfg(cfg: CFG) -> ECFG:
+    """Converts Context Free Grammar to Extended Context Free Grammar.
+
+    :param cfg: Context Free Grammar.
+    :return: Extended Context Free Grammar.
+    """
+    productions = defaultdict(list)
+    for production in cfg.productions:
+        productions[production.head].append(production.body)
+    return ECFG(
+        start_symbol=cfg.start_symbol,
+        variables=cfg.variables,
+        productions=make_productions_for_extended_cfg(productions),
+    )
+
+
+def make_productions_for_extended_cfg(cfg_productions: dict):
+    return {
+        left: reduce(
+            Regex.union,
+            map(
+                lambda body: reduce(
+                    Regex.concatenate, [Regex(obj.value) for obj in body]
+                )
+                if body
+                else Regex(""),
+                bodies,
+            ),
+        )
+        for left, bodies in cfg_productions.items()
+    }

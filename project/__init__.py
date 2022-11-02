@@ -12,3 +12,9 @@ from project.rpq import *
 
 import project.cfg
 from project.cfg import *
+
+import project.rsm
+from project.rsm import *
+
+import project.ecfg
+from project.ecfg import *
