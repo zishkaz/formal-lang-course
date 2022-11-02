@@ -7,7 +7,9 @@ from project import convert_cfg_to_ecfg, regex_to_min_dfa
 def check(cfg_as_text, expected_productions):
     ecfg = convert_cfg_to_ecfg(CFG.from_text(cfg_as_text))
     assert all(
-        regex_to_min_dfa(ecfg.productions[production]).is_equivalent_to(regex_to_min_dfa(expected_productions[production]))
+        regex_to_min_dfa(ecfg.productions[production]).is_equivalent_to(
+            regex_to_min_dfa(expected_productions[production])
+        )
         for production in ecfg.productions
     )
 

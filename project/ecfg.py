@@ -38,9 +38,7 @@ def get_ecfg_from_text(text: str, start_symbol: Variable = Variable("S")):
     )
 
 
-def get_ecfg_from_file(
-        file: str, start_symbol: Variable = Variable("S")
-) -> ECFG:
+def get_ecfg_from_file(file: str, start_symbol: Variable = Variable("S")) -> ECFG:
     """Constructs Extended Context Free Grammar from file.
 
     :param file: Path to file.
@@ -59,5 +57,8 @@ def convert_ecfg_to_rsm(ecfg: ECFG) -> RSM:
     """
     return RSM(
         start_symbol=ecfg.start_symbol,
-        boxes={h: r.to_epsilon_nfa().to_deterministic() for h, r in ecfg.productions.items()},
+        boxes={
+            h: r.to_epsilon_nfa().to_deterministic()
+            for h, r in ecfg.productions.items()
+        },
     )
