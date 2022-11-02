@@ -22,6 +22,7 @@ def test_get_ecfg_from_file_empty():
     assert ecfg.productions == expected_productions
     os.remove(ecfg_file)
 
+
 def test_get_ecfg_from_text_not_empty():
     ecfg = get_ecfg_from_text("S -> x")
     expected_productions = {Variable("S"): "x"}
