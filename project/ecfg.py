@@ -1,4 +1,4 @@
-from typing import NamedTuple, AbstractSet
+from typing import NamedTuple, AbstractSet, Dict
 
 from pyformlang.cfg import Variable
 from pyformlang.regular_expression import Regex
@@ -10,7 +10,7 @@ class ECFG(NamedTuple):
 
     start_symbol: Variable
     variables: AbstractSet[Variable]
-    productions: dict[Variable, Regex]
+    productions: Dict[Variable, Regex]
 
 
 def get_ecfg_from_text(text: str, start_symbol: Variable = Variable("S")):
