@@ -38,3 +38,8 @@ def cyk(word: str, cfg: CFG) -> bool:
                 dp[i][j] = dp[i][j] | other_set
 
     return cfg.start_symbol in dp[0][word_length - 1]
+
+
+def get_word_from_file(file: str) -> str:
+    with open(file) as f:
+        return f.read()

@@ -1,6 +1,9 @@
+import os
+
 from pyformlang.cfg import CFG
 
-from project import cyk
+from project import cyk, get_word_from_file
+from tests.test_get__cfg_from_file import create_temp_file
 
 
 def test_cyk_1():
@@ -9,11 +12,13 @@ def test_cyk_1():
     S -> epsilon
     """
     )
-    acceptable = [""]
+    file = create_temp_file("one_word.txt", "")
+    acceptable = [get_word_from_file(file)]
     not_acceptable = ["a", "bbbc", " "]
     assert all(cyk(s, cfg) for s in acceptable) and all(
         not cyk(s, cfg) for s in not_acceptable
     )
+    os.remove(file)
 
 
 def test_cyk_2():
