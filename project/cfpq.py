@@ -8,11 +8,11 @@ from project import load_graph, get_cfg_from_file, cfg_to_weak_cnf
 
 
 def cfpq(
-        graph: Union[str, MultiDiGraph],
-        cfg: Union[str, CFG],
-        start_nodes: Set = None,
-        final_nodes: Set = None,
-        start_symbol: Variable = Variable("S"),
+    graph: Union[str, MultiDiGraph],
+    cfg: Union[str, CFG],
+    start_nodes: Set = None,
+    final_nodes: Set = None,
+    start_symbol: Variable = Variable("S"),
 ) -> Set:
     """Executes query on graph with Hellings algorithm.
 
