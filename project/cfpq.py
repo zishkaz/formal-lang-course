@@ -135,12 +135,12 @@ algo_map = {"hellings": run_hellings_algo, "matrix": run_matrix_algo}
 
 
 def run_cfpq(
-        algo: str,
-        graph: Union[str, MultiDiGraph],
-        cfg: Union[str, CFG],
-        start_nodes: Set = None,
-        final_nodes: Set = None,
-        start_symbol: Variable = Variable("S"),
+    algo: str,
+    graph: Union[str, MultiDiGraph],
+    cfg: Union[str, CFG],
+    start_nodes: Set = None,
+    final_nodes: Set = None,
+    start_symbol: Variable = Variable("S"),
 ) -> Set:
     """Executes query on graph with Hellings algorithm.
 
