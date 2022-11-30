@@ -1,23 +1,38 @@
-from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State
-
-from scipy import sparse
+from collections import defaultdict
 from typing import Dict, Set, Union
+
+from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State
+from scipy import sparse
+from scipy.sparse import dok_matrix
 
 
 class AdjacencyMatrix:
-    def __init__(self, nfa: NondeterministicFiniteAutomaton = None):
-        if nfa is None:
-            self.start_states = set()
-            self.final_states = set()
-            self.state_indices = dict()
-            self.matrix = dict()
-        else:
-            self.start_states = nfa.start_states
-            self.final_states = nfa.final_states
+    def __init__(
+            self,
+            nfa: NondeterministicFiniteAutomaton = None,
+            state_to_index: Dict = None,
+            start_states: Set = None,
+            final_states: Set = None,
+            matrix: Dict = None,
+
+    ):
+        if nfa is not None:
+            self.start_states = nfa.start_states.copy()
+            self.final_states = nfa.final_states.copy()
             self.state_indices = {
                 state: index for index, state in enumerate(nfa.states)
             }
             self.matrix = self.__init_matrix__(nfa)
+        elif (state_to_index is not None) and (start_states is not None) and (final_states is not None) and (matrix is not None):
+            self.start_states = start_states
+            self.final_states = final_states
+            self.state_indices = state_to_index
+            self.matrix = matrix
+        else:
+            self.start_states = set()
+            self.final_states = set()
+            self.state_indices = dict()
+            self.matrix = dict()
 
     def get_states_count(self):
         """
@@ -52,29 +67,27 @@ class AdjacencyMatrix:
         return self.final_states
 
     def __init_matrix__(self, n_automaton: NondeterministicFiniteAutomaton):
-        result_matrix = dict()
-        nfa_dict = n_automaton.to_dict()
-        for state_from, transition in nfa_dict.items():
-            for label, states_to in transition.items():
+
+        result_matrix = defaultdict(
+            lambda: dok_matrix((len(n_automaton.states), len(n_automaton.states)), dtype=bool)
+        )
+        state_from_to_transition = n_automaton.to_dict()
+        for label in n_automaton.symbols:
+            for state_from, transitions in state_from_to_transition.items():
+                states_to = transitions.get(label, set())
                 if not isinstance(states_to, set):
                     states_to = {states_to}
                 for state_to in states_to:
                     index_from = self.state_indices[state_from]
                     index_to = self.state_indices[state_to]
-                    if label not in result_matrix:
-                        result_matrix[label] = sparse.csr_matrix(
-                            (self.get_states_count(), self.get_states_count()),
-                            dtype=bool,
-                        )
                     result_matrix[label][index_from, index_to] = True
-
         return result_matrix
 
     def make_transitive_closure(self):
         """
         :return: Transitive closure of the adjacency matrix.
         """
-        result = sum(self.matrix.values())
+        result = sum(self.matrix.values(), start=dok_matrix((len(self.state_indices), len(self.state_indices))))
         curr_nnz = 0
         prev_nnz = result.nnz
 
