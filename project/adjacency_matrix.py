@@ -8,13 +8,12 @@ from scipy.sparse import dok_matrix
 
 class AdjacencyMatrix:
     def __init__(
-            self,
-            nfa: NondeterministicFiniteAutomaton = None,
-            state_to_index: Dict = None,
-            start_states: Set = None,
-            final_states: Set = None,
-            matrix: Dict = None,
-
+        self,
+        nfa: NondeterministicFiniteAutomaton = None,
+        state_to_index: Dict = None,
+        start_states: Set = None,
+        final_states: Set = None,
+        matrix: Dict = None,
     ):
         if nfa is not None:
             self.start_states = nfa.start_states.copy()
@@ -23,7 +22,12 @@ class AdjacencyMatrix:
                 state: index for index, state in enumerate(nfa.states)
             }
             self.matrix = self.__init_matrix__(nfa)
-        elif (state_to_index is not None) and (start_states is not None) and (final_states is not None) and (matrix is not None):
+        elif (
+            (state_to_index is not None)
+            and (start_states is not None)
+            and (final_states is not None)
+            and (matrix is not None)
+        ):
             self.start_states = start_states
             self.final_states = final_states
             self.state_indices = state_to_index
@@ -69,7 +73,9 @@ class AdjacencyMatrix:
     def __init_matrix__(self, n_automaton: NondeterministicFiniteAutomaton):
 
         result_matrix = defaultdict(
-            lambda: dok_matrix((len(n_automaton.states), len(n_automaton.states)), dtype=bool)
+            lambda: dok_matrix(
+                (len(n_automaton.states), len(n_automaton.states)), dtype=bool
+            )
         )
         state_from_to_transition = n_automaton.to_dict()
         for label in n_automaton.symbols:
@@ -87,7 +93,10 @@ class AdjacencyMatrix:
         """
         :return: Transitive closure of the adjacency matrix.
         """
-        result = sum(self.matrix.values(), start=dok_matrix((len(self.state_indices), len(self.state_indices))))
+        result = sum(
+            self.matrix.values(),
+            start=dok_matrix((len(self.state_indices), len(self.state_indices))),
+        )
         curr_nnz = 0
         prev_nnz = result.nnz
 

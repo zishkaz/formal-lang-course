@@ -6,8 +6,16 @@ from pyformlang.cfg import CFG, Variable, Terminal
 from pyformlang.finite_automaton import EpsilonNFA
 from scipy.sparse import dok_matrix, eye
 
-from project import load_graph, get_cfg_from_file, cfg_to_weak_cnf, convert_cfg_to_ecfg, convert_ecfg_to_rsm, \
-    build_adjacency_matrix_from_rsm, AdjacencyMatrix, intersect_adjacency_matrices
+from project import (
+    load_graph,
+    get_cfg_from_file,
+    cfg_to_weak_cnf,
+    convert_cfg_to_ecfg,
+    convert_ecfg_to_rsm,
+    build_adjacency_matrix_from_rsm,
+    AdjacencyMatrix,
+    intersect_adjacency_matrices,
+)
 
 
 def run_hellings_algo(cfg: CFG, graph: MultiDiGraph) -> Set:
@@ -141,7 +149,9 @@ def run_tensor_algo(cfg: CFG, graph: MultiDiGraph) -> Set:
     :return: Set of Triples [vertex, variable, vertex]. It means that two variables have path between them that
     was received from the specified CFG variable.
     """
-    cfg_adj_mtx = build_adjacency_matrix_from_rsm(convert_ecfg_to_rsm(convert_cfg_to_ecfg(cfg)))
+    cfg_adj_mtx = build_adjacency_matrix_from_rsm(
+        convert_ecfg_to_rsm(convert_cfg_to_ecfg(cfg))
+    )
     cfg_index_to_state = dict()
     for s, i in cfg_adj_mtx.state_indices.items():
         cfg_index_to_state[i] = s
@@ -159,24 +169,33 @@ def run_tensor_algo(cfg: CFG, graph: MultiDiGraph) -> Set:
             break
         last_tc_size = len(tc_indices)
         for i, j in tc_indices:
-            cfg_i, cfg_j = i // graph_adj_mtx_states_size, j // graph_adj_mtx_states_size
+            cfg_i, cfg_j = (
+                i // graph_adj_mtx_states_size,
+                j // graph_adj_mtx_states_size,
+            )
             graph_i = i % graph_adj_mtx_states_size
             graph_j = j % graph_adj_mtx_states_size
             state_from, state_to = cfg_index_to_state[cfg_i], cfg_index_to_state[cfg_j]
             nonterm, _ = state_from.value
             if (
-                    state_from in cfg_adj_mtx.start_states
-                    and state_to in cfg_adj_mtx.final_states
+                state_from in cfg_adj_mtx.start_states
+                and state_to in cfg_adj_mtx.final_states
             ):
                 graph_adj_mtx.matrix[nonterm][graph_i, graph_j] = True
     result = set()
     for nonterm, matrix in graph_adj_mtx.matrix.items():
         for graph_i, graph_j in zip(*matrix.nonzero()):
-            result.add((graph_index_to_state[graph_i], nonterm, graph_index_to_state[graph_j]))
+            result.add(
+                (graph_index_to_state[graph_i], nonterm, graph_index_to_state[graph_j])
+            )
     return result
 
 
-algo_map = {"hellings": run_hellings_algo, "matrix": run_matrix_algo, "tensor": run_tensor_algo}
+algo_map = {
+    "hellings": run_hellings_algo,
+    "matrix": run_matrix_algo,
+    "tensor": run_tensor_algo,
+}
 
 
 def run_cfpq(
