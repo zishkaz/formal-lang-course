@@ -1,6 +1,6 @@
 from collections import defaultdict
-from functools import reduce
 
+import pyformlang
 from pyformlang.cfg import CFG, Variable
 from pyformlang.regular_expression import Regex
 
@@ -43,28 +43,23 @@ def convert_cfg_to_ecfg(cfg: CFG) -> ECFG:
     :param cfg: Context Free Grammar.
     :return: Extended Context Free Grammar.
     """
-    productions = defaultdict(list)
+    new_productions = defaultdict()
     for production in cfg.productions:
-        productions[production.head].append(production.body)
+        regex = Regex(
+            " ".join(
+                "$" if isinstance(obj, pyformlang.cfg.Epsilon) else obj.value
+                for obj in production.body
+            )
+            if len(production.body) > 0
+            else "$"
+        )
+        new_productions[production.head] = (
+            new_productions[production.head].union(regex)
+            if production.head in new_productions
+            else regex
+        )
     return ECFG(
         start_symbol=cfg.start_symbol,
         variables=cfg.variables,
-        productions=make_productions_for_extended_cfg(productions),
+        productions=new_productions,
     )
-
-
-def make_productions_for_extended_cfg(cfg_productions: dict):
-    return {
-        left: reduce(
-            Regex.union,
-            map(
-                lambda body: reduce(
-                    Regex.concatenate, [Regex(obj.value) for obj in body]
-                )
-                if body
-                else Regex(""),
-                bodies,
-            ),
-        )
-        for left, bodies in cfg_productions.items()
-    }

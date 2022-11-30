@@ -3,7 +3,7 @@ from pyformlang.cfg import CFG
 from project import build_two_cycle_labeled_graph, run_cfpq
 
 
-def test_cfpq_hellings_1():
+def test_cfpq_tensor_1():
     cfg_as_text = """
             S -> epsilon
             """
@@ -15,7 +15,7 @@ def test_cfpq_hellings_1():
     )
 
 
-def test_cfpq_hellings_2():
+def test_cfpq_tensor_2():
     cfg_as_text = """
             S -> a S
             S -> epsilon
@@ -28,11 +28,11 @@ def test_cfpq_hellings_2():
     )
 
 
-def test_cfpq_hellings_3():
+def test_cfpq_tensor_3():
     cfg_as_text = """
             S -> ( S ) S
             S -> S ( S )
-            S -> epsilon
+            S ->
             """
     graph = build_two_cycle_labeled_graph(2, 3, ("a", "b"))
     reachable_pairs = {(4, 4), (5, 5), (0, 0), (1, 1), (3, 3), (2, 2)}
