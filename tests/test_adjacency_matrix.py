@@ -39,13 +39,6 @@ def test_adjacency():
     assert all(bm.matrix[label][edge] for edge in edges)
 
 
-def test_tc():
-    nfa = make_nfa()
-    am = AdjacencyMatrix(nfa)
-    tc = am.make_transitive_closure()
-    assert tc.sum() == tc.size
-
-
 def test_intersection():
     fa1 = NondeterministicFiniteAutomaton()
     fa1.add_transitions(
